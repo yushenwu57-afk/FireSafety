@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public static class LevelHudBuilder
 {
     private const string LevelScenePath = "Assets/Scenes/Level_1.unity";
+    private const string ReticleTexturePath = "Assets/circle.png";
 
     [MenuItem("Tools/HUD/Rebuild Level 1 HUD")]
     public static void BuildLevel1Hud()
@@ -19,7 +20,7 @@ public static class LevelHudBuilder
         Text levelText = CreateText(
             canvas.transform,
             "LevelText",
-            "Level_1",
+            "Level 1",
             TextAnchor.UpperCenter,
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
@@ -137,7 +138,7 @@ public static class LevelHudBuilder
         SerializedObject serializedHud = new SerializedObject(gameHud);
         serializedHud.FindProperty("levelText").objectReferenceValue = levelText;
         serializedHud.FindProperty("dangerLevelText").objectReferenceValue = dangerLevelText;
-        serializedHud.FindProperty("levelDisplayName").stringValue = "Level_1";
+        serializedHud.FindProperty("levelDisplayName").stringValue = "Level 1";
         serializedHud.FindProperty("dangerLevel").stringValue = "Low";
         serializedHud.FindProperty("escMenuButton").objectReferenceValue = escButton;
         serializedHud.FindProperty("escMenuPanel").objectReferenceValue = escMenuPanel;
@@ -152,6 +153,7 @@ public static class LevelHudBuilder
         SetObjectReferenceArray(serializedHud.FindProperty("contextActionButtons"), actionButtons);
         SetObjectReferenceArray(serializedHud.FindProperty("contextActionButtonTexts"), actionButtonTexts);
         serializedHud.FindProperty("reticle").objectReferenceValue = reticle;
+        serializedHud.FindProperty("reticleTexture").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>(ReticleTexturePath);
         serializedHud.ApplyModifiedPropertiesWithoutUndo();
 
         escMenuPanel.SetActive(false);
@@ -171,6 +173,8 @@ public static class LevelHudBuilder
         {
             canvasObject = new GameObject("GameHUDCanvas");
         }
+
+        canvasObject.transform.localScale = Vector3.one;
 
         Canvas canvas = canvasObject.GetComponent<Canvas>();
         if (canvas == null)
@@ -305,91 +309,33 @@ public static class LevelHudBuilder
     {
         GameObject reticle = FindOrCreateChild(parent, "Reticle");
 
-        ReticleGraphic graphic = reticle.GetComponent<ReticleGraphic>();
-        if (graphic == null)
+        GameObjectUtility.RemoveMonoBehavioursWithMissingScript(reticle);
+
+        Shadow oldShadow = reticle.GetComponent<Shadow>();
+        if (oldShadow != null)
         {
-            graphic = reticle.AddComponent<ReticleGraphic>();
+            Object.DestroyImmediate(oldShadow);
         }
 
-        graphic.color = new Color(1f, 1f, 1f, 0.86f);
-        graphic.raycastTarget = false;
-
-        SerializedObject serializedReticle = new SerializedObject(graphic);
-        serializedReticle.FindProperty("radius").floatValue = 14f;
-        serializedReticle.FindProperty("thickness").floatValue = 3f;
-        serializedReticle.FindProperty("segments").intValue = 64;
-        serializedReticle.ApplyModifiedPropertiesWithoutUndo();
-
-        Shadow shadow = reticle.GetComponent<Shadow>();
-        if (shadow == null)
-        {
-            shadow = reticle.AddComponent<Shadow>();
-        }
-
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.85f);
-        shadow.effectDistance = new Vector2(1.5f, -1.5f);
-
-        RectTransform rectTransform = reticle.GetComponent<RectTransform>();
-        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        rectTransform.pivot = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = Vector2.zero;
-        rectTransform.sizeDelta = new Vector2(64f, 64f);
-
-        RemoveReticlePart(reticle.transform, "CenterDot");
-        RemoveReticlePart(reticle.transform, "CenterDotShadow");
-        RemoveReticlePart(reticle.transform, "TopLine");
-        RemoveReticlePart(reticle.transform, "BottomLine");
-        RemoveReticlePart(reticle.transform, "LeftLine");
-        RemoveReticlePart(reticle.transform, "RightLine");
-
-        const int segmentCount = 32;
-        const float radius = 24f;
-        Color color = new Color(1f, 1f, 1f, 0.95f);
-        Color shadowColor = new Color(0f, 0f, 0f, 0.8f);
-        for (int i = 0; i < segmentCount; i++)
-        {
-            float angle = (Mathf.PI * 2f * i) / segmentCount;
-            Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-            Vector2 position = direction * radius;
-            float degrees = angle * Mathf.Rad2Deg;
-
-            CreateReticlePart(reticle.transform, "CircleShadow" + i, position + new Vector2(1.5f, -1.5f), new Vector2(6f, 3f), degrees, shadowColor);
-            CreateReticlePart(reticle.transform, "CircleSegment" + i, position, new Vector2(6f, 3f), degrees, color);
-        }
-
-        return reticle;
-    }
-
-    private static void CreateReticlePart(Transform parent, string name, Vector2 position, Vector2 size, float rotation, Color color)
-    {
-        GameObject part = FindOrCreateChild(parent, name);
-
-        Image image = part.GetComponent<Image>();
+        RawImage image = reticle.GetComponent<RawImage>();
         if (image == null)
         {
-            image = part.AddComponent<Image>();
+            image = reticle.AddComponent<RawImage>();
         }
 
-        image.color = color;
+        image.texture = AssetDatabase.LoadAssetAtPath<Texture2D>(ReticleTexturePath);
+        image.color = Color.white;
         image.raycastTarget = false;
 
-        RectTransform rectTransform = part.GetComponent<RectTransform>();
-        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        RectTransform rectTransform = reticle.GetComponent<RectTransform>();
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = position;
-        rectTransform.sizeDelta = size;
-        rectTransform.localRotation = Quaternion.Euler(0f, 0f, rotation);
-    }
+        rectTransform.anchoredPosition = Vector2.zero;
+        rectTransform.localScale = Vector3.one;
+        rectTransform.sizeDelta = Vector2.zero;
 
-    private static void RemoveReticlePart(Transform parent, string name)
-    {
-        Transform child = parent.Find(name);
-        if (child != null)
-        {
-            Object.DestroyImmediate(child.gameObject);
-        }
+        return reticle;
     }
 
     private static GameObject CreatePanel(Transform parent)

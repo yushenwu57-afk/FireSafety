@@ -21,13 +21,13 @@ public static class LevelHudBuilder
             canvas.transform,
             "LevelText",
             "Level 1",
-            TextAnchor.UpperCenter,
-            new Vector2(0.5f, 1f),
-            new Vector2(0.5f, 1f),
-            new Vector2(0.5f, 1f),
-            new Vector2(0f, -24f),
-            new Vector2(640f, 60f),
-            34);
+            TextAnchor.UpperRight,
+            new Vector2(1f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(1f, 1f),
+            new Vector2(-24f, -24f),
+            new Vector2(500f, 64f),
+            38);
 
         Text dangerLevelText = CreateText(
             canvas.transform,
@@ -37,9 +37,9 @@ public static class LevelHudBuilder
             new Vector2(1f, 1f),
             new Vector2(1f, 1f),
             new Vector2(1f, 1f),
-            new Vector2(-24f, -24f),
-            new Vector2(420f, 60f),
-            30);
+            new Vector2(-24f, -82f),
+            new Vector2(500f, 64f),
+            38);
 
         Button escButton = CreateButton(
             canvas.transform,
@@ -49,7 +49,8 @@ public static class LevelHudBuilder
             new Vector2(0f, 1f),
             new Vector2(0f, 1f),
             new Vector2(24f, -24f),
-            new Vector2(120f, 52f));
+            new Vector2(160f, 70f),
+            32);
 
         GameObject reticle = CreateReticle(canvas.transform);
 
@@ -62,8 +63,9 @@ public static class LevelHudBuilder
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
-            new Vector2(0f, -72f),
-            new Vector2(260f, 56f));
+            new Vector2(0f, -90f),
+            new Vector2(680f, 70f),
+            32);
 
         Button restartButton = CreateButton(
             escMenuPanel.transform,
@@ -72,8 +74,9 @@ public static class LevelHudBuilder
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
-            new Vector2(0f, -144f),
-            new Vector2(260f, 56f));
+            new Vector2(0f, -176f),
+            new Vector2(680f, 70f),
+            32);
 
         Button mainMenuButton = CreateButton(
             escMenuPanel.transform,
@@ -82,8 +85,9 @@ public static class LevelHudBuilder
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
-            new Vector2(0f, -216f),
-            new Vector2(260f, 56f));
+            new Vector2(0f, -262f),
+            new Vector2(680f, 70f),
+            32);
 
         GameObject contextPromptPanel = CreateContextPromptPanel(canvas.transform);
         Text contextPromptText = CreateText(
@@ -109,9 +113,9 @@ public static class LevelHudBuilder
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
-            new Vector2(0f, -18f),
-            new Vector2(400f, 44f),
-            26);
+            new Vector2(0f, -24f),
+            new Vector2(700f, 62f),
+            34);
 
         Button[] actionButtons = new Button[4];
         Text[] actionButtonTexts = new Text[4];
@@ -124,8 +128,9 @@ public static class LevelHudBuilder
                 new Vector2(0.5f, 1f),
                 new Vector2(0.5f, 1f),
                 new Vector2(0.5f, 1f),
-                new Vector2(0f, -72f - i * 62f),
-                new Vector2(360f, 48f));
+                new Vector2(0f, -90f - i * 86f),
+                new Vector2(680f, 70f),
+                32);
             actionButtonTexts[i] = actionButtons[i].GetComponentInChildren<Text>();
         }
 
@@ -133,6 +138,12 @@ public static class LevelHudBuilder
         if (gameHud == null)
         {
             gameHud = canvas.gameObject.AddComponent<GameHud>();
+        }
+
+        DelayedFireEvent delayedFireEvent = canvas.GetComponent<DelayedFireEvent>();
+        if (delayedFireEvent == null)
+        {
+            delayedFireEvent = canvas.gameObject.AddComponent<DelayedFireEvent>();
         }
 
         SerializedObject serializedHud = new SerializedObject(gameHud);
@@ -156,10 +167,20 @@ public static class LevelHudBuilder
         serializedHud.FindProperty("reticleTexture").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Texture2D>(ReticleTexturePath);
         serializedHud.ApplyModifiedPropertiesWithoutUndo();
 
+        SerializedObject serializedFireEvent = new SerializedObject(delayedFireEvent);
+        serializedFireEvent.FindProperty("targetEffectName").stringValue = "Particles_Fire_02";
+        SerializedProperty additionalTargetEffectNames = serializedFireEvent.FindProperty("additionalTargetEffectNames");
+        additionalTargetEffectNames.arraySize = 1;
+        additionalTargetEffectNames.GetArrayElementAtIndex(0).stringValue = "Particles_Dust_01";
+        serializedFireEvent.FindProperty("delaySeconds").floatValue = 5f;
+        serializedFireEvent.FindProperty("dangerLevelAfterDelay").stringValue = "Medium";
+        serializedFireEvent.FindProperty("gameHud").objectReferenceValue = gameHud;
+        serializedFireEvent.ApplyModifiedPropertiesWithoutUndo();
+
         escMenuPanel.SetActive(false);
         contextPromptPanel.SetActive(false);
         contextActionPanel.SetActive(false);
-        ConfigureKettleContext();
+        ConfigurePanContext();
 
         EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorSceneManager.SaveOpenScenes();
@@ -259,7 +280,8 @@ public static class LevelHudBuilder
         Vector2 anchorMax,
         Vector2 pivot,
         Vector2 anchoredPosition,
-        Vector2 sizeDelta)
+        Vector2 sizeDelta,
+        int fontSize = 26)
     {
         GameObject buttonObject = FindOrCreateChild(parent, name);
         Image image = buttonObject.GetComponent<Image>();
@@ -299,7 +321,7 @@ public static class LevelHudBuilder
             new Vector2(0.5f, 0.5f),
             Vector2.zero,
             Vector2.zero,
-            26);
+            fontSize);
         text.raycastTarget = false;
 
         return button;
@@ -355,7 +377,7 @@ public static class LevelHudBuilder
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
         rectTransform.anchoredPosition = Vector2.zero;
-        rectTransform.sizeDelta = new Vector2(320f, 308f);
+        rectTransform.sizeDelta = new Vector2(760f, 360f);
 
         CreateText(
             panel.transform,
@@ -365,9 +387,9 @@ public static class LevelHudBuilder
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
             new Vector2(0.5f, 1f),
-            new Vector2(0f, -22f),
-            new Vector2(280f, 48f),
-            30);
+            new Vector2(0f, -24f),
+            new Vector2(700f, 62f),
+            34);
 
         return panel;
     }
@@ -410,51 +432,66 @@ public static class LevelHudBuilder
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = new Vector2(0f, -36f);
-        rectTransform.sizeDelta = new Vector2(440f, 340f);
+        rectTransform.anchoredPosition = new Vector2(0f, -28f);
+        rectTransform.sizeDelta = new Vector2(760f, 300f);
 
         return panel;
     }
 
-    private static void ConfigureKettleContext()
+    private static void ConfigurePanContext()
     {
-        GameObject kettle = GameObject.Find("Kettle");
-        if (kettle == null)
+        GameObject pan = GameObject.Find("Pan_02");
+        if (pan == null)
         {
-            Debug.LogWarning("LevelHudBuilder could not find a GameObject named Kettle in Level_1.");
+            Debug.LogWarning("LevelHudBuilder could not find a GameObject named Pan_02 in Level_1.");
             return;
         }
 
-        ObservableContext context = kettle.GetComponent<ObservableContext>();
+        ObservableContext context = pan.GetComponent<ObservableContext>();
         if (context == null)
         {
-            context = kettle.AddComponent<ObservableContext>();
+            context = pan.AddComponent<ObservableContext>();
         }
 
-        if (kettle.GetComponent<HighlightableObject>() == null)
+        if (pan.GetComponent<HighlightableObject>() == null)
         {
-            kettle.AddComponent<HighlightableObject>();
+            pan.AddComponent<HighlightableObject>();
+        }
+
+        if (pan.GetComponent<PanSmokeResponse>() == null)
+        {
+            pan.AddComponent<PanSmokeResponse>();
         }
 
         SerializedObject serializedContext = new SerializedObject(context);
         serializedContext.FindProperty("promptText").stringValue =
-            "Faint smoke rises around the kettle. The metal surface looks hot, and the surrounding air shimmers slightly.";
+            "Flames and smoke are rising from the pan. Choose a fire-safety response quickly.";
         serializedContext.ApplyModifiedPropertiesWithoutUndo();
 
-        ActionContext actionContext = kettle.GetComponent<ActionContext>();
+        ActionContext actionContext = pan.GetComponent<ActionContext>();
         if (actionContext == null)
         {
-            actionContext = kettle.AddComponent<ActionContext>();
+            actionContext = pan.AddComponent<ActionContext>();
         }
 
         SerializedObject serializedActionContext = new SerializedObject(actionContext);
         SerializedProperty options = serializedActionContext.FindProperty("options");
-        options.arraySize = 4;
-        SetActionOption(options.GetArrayElementAtIndex(0), "Operate nearby power controls", "You operate the nearby controls. The kettle's immediate activity changes.");
-        SetActionOption(options.GetArrayElementAtIndex(1), "Notify people in the room", "You alert nearby people to the visible smoke and heat.");
-        SetActionOption(options.GetArrayElementAtIndex(2), "Contact emergency services", "You start contacting emergency services and report the observed smoke and heat.");
-        SetActionOption(options.GetArrayElementAtIndex(3), "Begin evacuating the area", "You begin moving people away from the immediate area.");
+        options.arraySize = 2;
+        SetActionOption(options.GetArrayElementAtIndex(0), "A. Turn off stove", "The heat source is off. Flames remain, but there is less smoke.");
+        SetActionOption(options.GetArrayElementAtIndex(1), "B. Pour water", "The fire suddenly expands, and the smoke becomes much thicker.");
         serializedActionContext.ApplyModifiedPropertiesWithoutUndo();
+
+        ProximityActionMenu proximityMenu = pan.GetComponent<ProximityActionMenu>();
+        if (proximityMenu == null)
+        {
+            proximityMenu = pan.AddComponent<ProximityActionMenu>();
+        }
+
+        SerializedObject serializedProximityMenu = new SerializedObject(proximityMenu);
+        serializedProximityMenu.FindProperty("actionContext").objectReferenceValue = actionContext;
+        serializedProximityMenu.FindProperty("triggerDistance").floatValue = 2f;
+        serializedProximityMenu.FindProperty("activationDelaySeconds").floatValue = 5f;
+        serializedProximityMenu.ApplyModifiedPropertiesWithoutUndo();
     }
 
     private static void SetActionOption(SerializedProperty option, string label, string resultText)

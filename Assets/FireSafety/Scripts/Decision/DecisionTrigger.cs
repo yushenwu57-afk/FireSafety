@@ -1,4 +1,5 @@
 using FireSafety.Interaction;
+using FireSafety.Scenario;
 using UnityEngine;
 
 namespace FireSafety.Decision
@@ -16,6 +17,14 @@ namespace FireSafety.Decision
         [SerializeField] private string optionA = "Option A";
         [SerializeField] private string optionB = "Option B";
         [SerializeField] private string optionC = "Option C";
+
+        [Header("Option Outcomes")]
+        [SerializeField] private DecisionOutcomeData optionAOutcome =
+            new DecisionOutcomeData();
+        [SerializeField] private DecisionOutcomeData optionBOutcome =
+            new DecisionOutcomeData();
+        [SerializeField] private DecisionOutcomeData optionCOutcome =
+            new DecisionOutcomeData();
 
         private void OnEnable()
         {
@@ -45,7 +54,10 @@ namespace FireSafety.Decision
                 decisionDescription,
                 optionA,
                 optionB,
-                optionC);
+                optionC,
+                optionAOutcome,
+                optionBOutcome,
+                optionCOutcome);
 
             decisionManager.OpenDecision(decision);
         }

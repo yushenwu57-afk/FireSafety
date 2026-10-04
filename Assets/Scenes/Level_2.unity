@@ -2282,6 +2282,10 @@ GameObject:
   - component: {fileID: 107813978}
   - component: {fileID: 107813979}
   - component: {fileID: 107813980}
+  - component: {fileID: 107813982}
+  - component: {fileID: 107813981}
+  - component: {fileID: 107813984}
+  - component: {fileID: 107813983}
   m_Layer: 0
   m_Name: GameSystems
   m_TagString: Untagged
@@ -2344,6 +2348,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 107813975}
   decisionManager: {fileID: 107813977}
+  dangerManager: {fileID: 107813979}
+  fireEffectController: {fileID: 107813982}
+  smokeEffectController: {fileID: 107813984}
+  initialPhase: 0
 --- !u!114 &107813979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2370,9 +2378,71 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 107813975}
+  scenarioManager: {fileID: 107813978}
   dangerManager: {fileID: 107813979}
   mediumDangerDelay: 10
   highDangerDelay: 20
+--- !u!114 &107813981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107813974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 136ac063e0a3e2443ba8fa72ba013dfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenarioProgression: {fileID: 107813980}
+  fireEffectController: {fileID: 107813982}
+  fireStartTime: 12
+--- !u!114 &107813982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107813974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74a9a276500904d48858737060f9703a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireParticleSystems:
+  - {fileID: 2110598289}
+  startActive: 0
+--- !u!114 &107813983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107813974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de670a7c3835625409db5fca90ce127f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scenarioProgression: {fileID: 107813980}
+  smokeEffectController: {fileID: 107813984}
+  smokeStartTime: 16
+--- !u!114 &107813984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107813974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c031fcf1427f6c408b0bfac494f80a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  smokeRoot: {fileID: 746629217}
+  smokeParticleSystems:
+  - {fileID: 899829890}
+  startActive: 0
 --- !u!4 &108300181 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2092957418856817519, guid: cfb58ac7ae4f548489bed1685ccbaa98, type: 3}
@@ -16029,6 +16099,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: caea58059a95c7b489169dee009640fe, type: 3}
+--- !u!1 &746629217 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6269511039872361701, guid: 579efd77e9dc6244185ff722d2942a25, type: 3}
+  m_PrefabInstance: {fileID: 669654099}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &747561994 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 182204276251185574, guid: 4f714849e42ba7747874245b7c148ba1, type: 3}
@@ -19593,7 +19668,9 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2680016991229611476, guid: 73e742fc1e060e742bed91df04b4f497, type: 3}
+    - {fileID: 3178331236376645345, guid: 73e742fc1e060e742bed91df04b4f497, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73e742fc1e060e742bed91df04b4f497, type: 3}
@@ -19822,6 +19899,11 @@ Transform:
 --- !u!4 &899829888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6269511039872361702, guid: 579efd77e9dc6244185ff722d2942a25, type: 3}
+  m_PrefabInstance: {fileID: 669654099}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &899829890 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6269511039872361703, guid: 579efd77e9dc6244185ff722d2942a25, type: 3}
   m_PrefabInstance: {fileID: 669654099}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &900144005
@@ -24457,7 +24539,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -72.41}
+  m_AnchoredPosition: {x: 0, y: -100.7}
   m_SizeDelta: {x: 180, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1103611584
@@ -25660,7 +25742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 55.4}
+  m_AnchoredPosition: {x: 0, y: 86}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1168648137
@@ -26062,8 +26144,6 @@ GameObject:
   - component: {fileID: 1179933775}
   - component: {fileID: 1179933774}
   - component: {fileID: 1179933773}
-  - component: {fileID: 1179933772}
-  - component: {fileID: 1179933771}
   m_Layer: 0
   m_Name: GameHUDCanvas
   m_TagString: Untagged
@@ -26071,62 +26151,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1179933771
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179933770}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91fd7a40ea4246c69719e6cf85ad8a01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetEffectName: Particles_Fire_02
-  additionalTargetEffectNames:
-  - Particles_Dust_01
-  delaySeconds: 5
-  dangerLevelAfterDelay: Medium
-  gameHud: {fileID: 1179933772}
---- !u!114 &1179933772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179933770}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd2db6dd0fdcb42129e47fc8cb37f573, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelText: {fileID: 1765699873}
-  dangerLevelText: {fileID: 0}
-  levelDisplayName: Level 1
-  dangerLevel: Low
-  escMenuButton: {fileID: 1092031835}
-  escMenuPanel: {fileID: 1144723747}
-  resumeButton: {fileID: 512179786}
-  restartButton: {fileID: 1007101383}
-  mainMenuButton: {fileID: 2096185689}
-  mainMenuSceneName: Menu
-  contextPromptPanel: {fileID: 109726335}
-  contextPromptText: {fileID: 1413721076}
-  contextActionPanel: {fileID: 816014711}
-  contextActionTitleText: {fileID: 874299623}
-  contextActionButtons:
-  - {fileID: 1432759392}
-  - {fileID: 608943880}
-  - {fileID: 941584632}
-  - {fileID: 1297541888}
-  contextActionButtonTexts:
-  - {fileID: 373122754}
-  - {fileID: 1689298300}
-  - {fileID: 1548603710}
-  - {fileID: 1758797255}
-  reticle: {fileID: 775838127}
-  reticleTexture: {fileID: 2800000, guid: c95f194b3fc9a42589f7412662316d4f, type: 3}
 --- !u!114 &1179933773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37728,7 +37752,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 500, y: 260}
+  m_SizeDelta: {x: 536.88, y: 398.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1758783973
 MonoBehaviour:
@@ -43351,6 +43375,37 @@ MonoBehaviour:
   optionA: Option A
   optionB: Option B
   optionC: Option C
+  optionAOutcome:
+    feedbackTitle: Feedback Title
+    feedbackDescription: 'Option A reduced the immediate danger.
+
+'
+    changeDangerLevel: 1
+    targetDangerLevel: 0
+    fireCommand: 2
+    smokeCommand: 2
+    changeScenarioPhase: 0
+    targetScenarioPhase: 0
+  optionBOutcome:
+    feedbackTitle: Consequence
+    feedbackDescription: The situation remains unchanged.
+    changeDangerLevel: 0
+    targetDangerLevel: 0
+    fireCommand: 0
+    smokeCommand: 0
+    changeScenarioPhase: 0
+    targetScenarioPhase: 0
+  optionCOutcome:
+    feedbackTitle: Situation Worsened
+    feedbackDescription: 'Option C made the situation more dangerous.
+
+'
+    changeDangerLevel: 1
+    targetDangerLevel: 2
+    fireCommand: 1
+    smokeCommand: 1
+    changeScenarioPhase: 0
+    targetScenarioPhase: 0
 --- !u!1001 &2029871342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45417,6 +45472,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5aedd7c0ef8da864daeefeb610f1b7b3, type: 3}
+--- !u!198 &2110598289 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4872104675063381933, guid: 73e742fc1e060e742bed91df04b4f497, type: 3}
+  m_PrefabInstance: {fileID: 881058384}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2111709732 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4111823549340719880, guid: a7581c422d68c894b8e1f79d4a93ec06, type: 3}

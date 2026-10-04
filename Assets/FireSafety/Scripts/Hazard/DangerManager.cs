@@ -27,5 +27,15 @@ namespace FireSafety.Hazard
             CurrentLevel = newLevel;
             DangerLevelChanged?.Invoke(previousLevel, newLevel);
         }
+
+        public void RaiseDangerLevel(DangerLevel minimumLevel)
+        {
+            if ((int)CurrentLevel >= (int)minimumLevel)
+            {
+                return;
+            }
+
+            SetDangerLevel(minimumLevel);
+        }
     }
 }

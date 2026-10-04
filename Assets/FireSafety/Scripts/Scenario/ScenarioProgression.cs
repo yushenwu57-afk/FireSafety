@@ -8,6 +8,7 @@ namespace FireSafety.Scenario
     {
         [Header("References")]
         [SerializeField] private GameManager gameManager;
+        [SerializeField] private ScenarioManager scenarioManager;
         [SerializeField] private DangerManager dangerManager;
 
         [Header("Progression")]
@@ -26,12 +27,14 @@ namespace FireSafety.Scenario
             if (gameManager != null)
             {
                 gameManager.StateChanged += HandleStateChanged;
-                isProgressing = gameManager.CurrentState == GameState.Exploration;
             }
-            else
+
+            if (scenarioManager != null)
             {
-                isProgressing = false;
+                scenarioManager.ScenarioPhaseChanged += HandleScenarioPhaseChanged;
             }
+
+            UpdateProgressionState();
         }
 
         private void OnDisable()
@@ -39,6 +42,11 @@ namespace FireSafety.Scenario
             if (gameManager != null)
             {
                 gameManager.StateChanged -= HandleStateChanged;
+            }
+
+            if (scenarioManager != null)
+            {
+                scenarioManager.ScenarioPhaseChanged -= HandleScenarioPhaseChanged;
             }
 
             isProgressing = false;
@@ -77,7 +85,7 @@ namespace FireSafety.Scenario
             if (!mediumDangerTriggered && elapsedScenarioTime >= mediumDangerDelay)
             {
                 mediumDangerTriggered = true;
-                dangerManager.SetDangerLevel(DangerLevel.Medium);
+                dangerManager.RaiseDangerLevel(DangerLevel.Medium);
             }
 
             if (mediumDangerTriggered
@@ -85,13 +93,34 @@ namespace FireSafety.Scenario
                 && elapsedScenarioTime >= highDangerDelay)
             {
                 highDangerTriggered = true;
-                dangerManager.SetDangerLevel(DangerLevel.High);
+                dangerManager.RaiseDangerLevel(DangerLevel.High);
             }
         }
 
         private void HandleStateChanged(GameState previousState, GameState newState)
         {
-            isProgressing = newState == GameState.Exploration;
+            UpdateProgressionState();
+        }
+
+        private void HandleScenarioPhaseChanged(
+            ScenarioPhase previousPhase,
+            ScenarioPhase newPhase)
+        {
+            UpdateProgressionState();
+        }
+
+        private void UpdateProgressionState()
+        {
+            if (gameManager == null || scenarioManager == null)
+            {
+                isProgressing = false;
+                return;
+            }
+
+            ScenarioPhase phase = scenarioManager.CurrentPhase;
+            isProgressing = gameManager.CurrentState == GameState.Exploration
+                && phase != ScenarioPhase.Resolved
+                && phase != ScenarioPhase.Finished;
         }
     }
 }

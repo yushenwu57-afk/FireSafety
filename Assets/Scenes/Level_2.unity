@@ -2792,8 +2792,8 @@ MonoBehaviour:
   decisionManager: {fileID: 107813977}
   stabilisingDecision:
     decisionTitle: The Fire Is Still Burning
-    decisionDescription: The stove is off, but flames are still coming from the pan.
-      What should you do next?
+    decisionDescription: "The stove is off, but flames are still \ncoming from the
+      pan. What should you do next?"
     optionA: Slide a lid over the pan
     optionB: Carry the burning pan to the sink
     optionC: Use a fire blanket

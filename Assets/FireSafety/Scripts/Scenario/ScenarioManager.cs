@@ -19,12 +19,19 @@ namespace FireSafety.Scenario
         [SerializeField] private ScenarioPhase initialPhase =
             ScenarioPhase.Observation;
 
+        private bool hasCompletedScenario;
+        private bool hasFailedScenario;
+
         public ConsequenceData CurrentConsequence { get; private set; }
         public ScenarioPhase CurrentPhase { get; private set; }
+        public bool HasScenarioFailed => hasFailedScenario;
 
         public event Action<ConsequenceData> ConsequenceOpened;
         public event Action<ConsequenceData> ConsequenceClosed;
         public event Action<ScenarioPhase, ScenarioPhase> ScenarioPhaseChanged;
+        public event Action ScenarioCompleted;
+        public event Action ScenarioFailed;
+        public event Action<ScenarioPhase> ConsequenceContinued;
 
         private void Awake()
         {
@@ -58,9 +65,42 @@ namespace FireSafety.Scenario
             CurrentConsequence = null;
             ConsequenceClosed?.Invoke(closedConsequence);
 
+            if (CurrentPhase == ScenarioPhase.Resolved)
+            {
+                if (gameManager != null)
+                {
+                    gameManager.ChangeState(GameState.Finished);
+                }
+
+                if (!hasCompletedScenario)
+                {
+                    hasCompletedScenario = true;
+                    ScenarioCompleted?.Invoke();
+                }
+
+                return;
+            }
+
+            if (CurrentPhase == ScenarioPhase.Finished)
+            {
+                if (gameManager != null)
+                {
+                    gameManager.ChangeState(GameState.Finished);
+                }
+
+                if (!hasFailedScenario)
+                {
+                    hasFailedScenario = true;
+                    ScenarioFailed?.Invoke();
+                }
+
+                return;
+            }
+
             if (gameManager != null)
             {
                 gameManager.ChangeState(GameState.Exploration);
+                ConsequenceContinued?.Invoke(CurrentPhase);
             }
         }
 

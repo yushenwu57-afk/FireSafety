@@ -1,4 +1,5 @@
 using System;
+using FireSafety.Evaluation;
 using FireSafety.Hazard;
 using UnityEngine;
 
@@ -34,6 +35,12 @@ namespace FireSafety.Scenario
         [SerializeField] private ScenarioPhase targetScenarioPhase =
             ScenarioPhase.Observation;
 
+        [Header("Evaluation")]
+        [SerializeField] private ResponseQuality responseQuality =
+            ResponseQuality.Safe;
+        [SerializeField] private bool isRecoveryAction;
+        [SerializeField, TextArea] private string learningPoint = string.Empty;
+
         public string FeedbackTitle => feedbackTitle;
         public string FeedbackDescription => feedbackDescription;
         public bool ChangeDangerLevel => changeDangerLevel;
@@ -42,5 +49,8 @@ namespace FireSafety.Scenario
         public VisualEffectCommand SmokeCommand => smokeCommand;
         public bool ChangeScenarioPhase => changeScenarioPhase;
         public ScenarioPhase TargetScenarioPhase => targetScenarioPhase;
+        public ResponseQuality ResponseQuality => responseQuality;
+        public bool IsRecoveryAction => isRecoveryAction;
+        public string LearningPoint => learningPoint;
     }
 }

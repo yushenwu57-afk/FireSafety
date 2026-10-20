@@ -1,5 +1,12 @@
 # 第二关：火灾撤离决策
 
+## 评级音效绑定（2026-10-20）
+
+- Level_2 的 ScenarioMusic 已配置 results.mp3，但 finalResults 序列化引用为空；EvacuationLevelController 在 Start 动态创建 FinalResultsUI，原先未将它绑定到音乐组件。因此评级显示时的 ResultsShown 事件没有音乐订阅者。
+- 控制器在创建结算 UI 后调用 ScenarioMusic.BindResultsUI，沿用现有 ResultsShown 事件，在 S/A/B/C 结算显示时切换到 results 并非循环播放。绑定先移除旧订阅，组件禁用时仍解除订阅；现有 showingResults 拦截同一轮重复播放。重玩重载场景后重新绑定。
+- 验证：60 个运行时脚本、Editor 脚本编译及 271 项逻辑断言（10 条终止路径）通过；git diff --check 通过。完整验证仍停在既有第 51 行 Canvas 缩放断言。未执行 Unity Play Mode 音频验证。
+- 待手动验证：第二关分别完成 S/A/B 和两条 C 路线，确认仅在 Level Rank 显示时播放一次 results；结算后开关 ESC 菜单不重新播放；Replay 后再次结算可播放；第一关原有结算音效正常。
+
 实现日期：2026-10-20。当前状态：代码和自动验证通过，编辑器运行验证待完成。
 
 ## 入口与实现

@@ -105,6 +105,9 @@ namespace FireSafety.Scenario
             dangerText.resizeTextMaxSize = 28;
             panelGroup = decisionPanel.AddComponent<CanvasGroup>();
             resultsUI = gameObject.AddComponent<FinalResultsUI>();
+            ScenarioMusic music = FindObjectOfType<ScenarioMusic>();
+            if (music != null)
+                music.BindResultsUI(resultsUI);
             menuButton.onClick.AddListener(ToggleMenu);
             resumeButton.onClick.AddListener(ToggleMenu);
             restartButton.onClick.AddListener(Replay);

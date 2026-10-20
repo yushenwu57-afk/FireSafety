@@ -49,9 +49,24 @@ public sealed class ScenarioMusic : MonoBehaviour
             legacyHud.DangerLevelChanged += HandleLegacyDangerChanged;
         }
 
+        BindResultsUI(finalResults);
+    }
+
+    public void BindResultsUI(FinalResultsUI resultsUI)
+    {
         if (finalResults != null)
         {
+            finalResults.ResultsShown -= HandleResultsShown;
+        }
+
+        finalResults = resultsUI;
+        if (isActiveAndEnabled && finalResults != null)
+        {
             finalResults.ResultsShown += HandleResultsShown;
+            if (finalResults.IsVisible)
+            {
+                HandleResultsShown();
+            }
         }
     }
 

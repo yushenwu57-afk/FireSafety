@@ -8323,8 +8323,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -14549,7 +14549,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -30.93, y: 0}
   m_SizeDelta: {x: 299.35, y: 15.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &635571030
@@ -14605,7 +14605,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -24396,7 +24396,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -27157,13 +27157,14 @@ GameObject:
   - component: {fileID: 1144723748}
   - component: {fileID: 1144723750}
   - component: {fileID: 1144723749}
+  - component: {fileID: 1144723751}
   m_Layer: 0
   m_Name: EscMenuPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1144723748
 RectTransform:
   m_ObjectHideFlags: 0
@@ -27225,6 +27226,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144723747}
   m_CullTransparentMesh: 1
+--- !u!225 &1144723751
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144723747}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!4 &1146461760 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1571461385857385190, guid: 5e34cf7537839fd4f9622656726ca5c6, type: 3}
@@ -28217,6 +28230,7 @@ GameObject:
   - component: {fileID: 1179933775}
   - component: {fileID: 1179933774}
   - component: {fileID: 1179933773}
+  - component: {fileID: 1179933777}
   m_Layer: 0
   m_Name: GameHUDCanvas
   m_TagString: Untagged
@@ -28312,6 +28326,26 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1179933777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179933770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a49b9ed83aa5c54588ea69fc070e257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 107813975}
+  menuPanel: {fileID: 1144723751}
+  openMenuButton: {fileID: 1092031835}
+  resumeButton: {fileID: 512179786}
+  sceneFlowService: {fileID: 107813986}
+  restartButton: {fileID: 1007101383}
+  mainMenuButton: {fileID: 2096185689}
+  mainMenuSceneName: Menu
 --- !u!1001 &1181541093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28968,7 +29002,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: Kitchen Emergency
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -28995,13 +29029,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 48
+  m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -30230,7 +30264,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Begin
+  m_text: Start
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -36836,10 +36870,10 @@ MonoBehaviour:
   situationText: {fileID: 356804070}
   objectivesText: {fileID: 1978686679}
   beginButton: {fileID: 1953277696}
-  levelTitle: "Level 1 \u2014 Kitchen Emergency"
+  levelTitle: Kitchen Emergency
   situation: You are alone in a residential apartment. Something in the environment
     may require your attention.
-  objectives: "Objectives\n\n\u2022 Identify the hazard\n\u2022 Respond appropriately\n\u2022
+  objectives: "Objectives\n\u2022 Identify the hazard\n\u2022 Respond appropriately\n\u2022
     Prevent the situation from escalating"
 --- !u!225 &1505367823
 CanvasGroup:
@@ -41882,7 +41916,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1765699873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47041,8 +47075,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -47554,7 +47588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -20.8}
+  m_AnchoredPosition: {x: -7.5, y: 13.299999}
   m_SizeDelta: {x: 350, y: -94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2005423001

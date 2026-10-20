@@ -14,7 +14,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject instructionsPanel;
 
     [Header("Scenes")]
-    [SerializeField] private string firstLevelSceneName = "Level_1";
+    [SerializeField] private string firstLevelSceneName = "Level";
 
     private void OnEnable()
     {
@@ -62,7 +62,18 @@ public class MenuController : MonoBehaviour
 
     private void StartGame()
     {
+        // The menu is destroyed during the load, so use a static, one-shot callback.
+        SceneManager.sceneLoaded -= RefreshLevelEnvironment;
+        SceneManager.sceneLoaded += RefreshLevelEnvironment;
         SceneManager.LoadScene(firstLevelSceneName);
+    }
+
+    private static void RefreshLevelEnvironment(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= RefreshLevelEnvironment;
+
+        // Refresh after the destination scene's RenderSettings have been loaded.
+        DynamicGI.UpdateEnvironment();
     }
 
     private void ShowInstructions()

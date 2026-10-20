@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public static class MenuSceneBuilder
 {
     private const string MenuScenePath = "Assets/Scenes/Menu.unity";
-    private const string FirstLevelSceneName = "Level_1";
+    private const string FirstLevelSceneName = "Level";
 
     [MenuItem("Tools/Menu/Rebuild Main Menu")]
     public static void BuildMenu()

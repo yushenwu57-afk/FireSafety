@@ -1,5 +1,7 @@
 using FireSafety.Core;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace FireSafety.UI
@@ -13,6 +15,8 @@ namespace FireSafety.UI
         [SerializeField] private Button resumeButton;
         [SerializeField] private SceneFlowService sceneFlowService;
         [SerializeField] private Button restartButton;
+        [SerializeField] private Button mainMenuButton;
+        [SerializeField] private string mainMenuSceneName = "Menu";
 
         private bool isMenuOpen;
 
@@ -25,6 +29,16 @@ namespace FireSafety.UI
 
             if (openMenuButton != null)
             {
+                // Keep the HUD button clickable without letting Space submit it.
+                Navigation navigation = openMenuButton.navigation;
+                navigation.mode = Navigation.Mode.None;
+                openMenuButton.navigation = navigation;
+                if (EventSystem.current != null
+                    && EventSystem.current.currentSelectedGameObject == openMenuButton.gameObject)
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
+                }
+
                 openMenuButton.onClick.AddListener(OpenMenu);
             }
 
@@ -40,6 +54,11 @@ namespace FireSafety.UI
 
             isMenuOpen = false;
             SetMenuVisible(false);
+
+            if (mainMenuButton != null)
+            {
+                mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+            }
         }
 
         private void OnDisable()
@@ -67,6 +86,11 @@ namespace FireSafety.UI
             bool shouldRestoreExploration = isMenuOpen
                 && gameManager != null
                 && gameManager.CurrentState == GameState.Paused;
+
+            if (mainMenuButton != null)
+            {
+                mainMenuButton.onClick.RemoveListener(ReturnToMainMenu);
+            }
 
             isMenuOpen = false;
             SetMenuVisible(false);
@@ -134,6 +158,11 @@ namespace FireSafety.UI
             {
                 sceneFlowService.RestartCurrentScene();
             }
+        }
+
+        private void ReturnToMainMenu()
+        {
+            SceneManager.LoadScene(mainMenuSceneName);
         }
 
         private void HandleGameStateChanged(

@@ -75,52 +75,22 @@ namespace FireSafety.UI
                 return;
             }
 
-            // Measure the existing fonts; only resize and position the panel contents.
+            // Match Level 2's fixed modal layout; content and event wiring stay intact.
             RectTransform panelRect = introPanel.GetComponent<RectTransform>();
-            const float padding = 40f;
-            const float spacing = 24f;
-            float width = Mathf.Max(panelRect.rect.width, 760f);
-            float contentWidth = width - padding * 2f;
-            float offset = padding;
-
-            PlaceText(levelTitleText, contentWidth, ref offset, spacing);
-            PlaceText(situationText, contentWidth, ref offset, spacing);
-            PlaceText(objectivesText, contentWidth, ref offset, spacing);
-
-            if (beginButton != null)
-            {
-                RectTransform buttonRect = beginButton.GetComponent<RectTransform>();
-                float buttonHeight = buttonRect.rect.height;
-                PlaceRect(buttonRect, buttonRect.rect.width, buttonHeight, offset);
-                offset += buttonHeight + spacing;
-            }
-
-            panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
-            panelRect.SetSizeWithCurrentAnchors(
-                RectTransform.Axis.Vertical, offset - spacing + padding);
-        }
-
-        private static void PlaceText(TMP_Text text, float width, ref float offset, float spacing)
-        {
-            if (text == null)
-            {
-                return;
-            }
-
-            float height = Mathf.Ceil(text.GetPreferredValues(
-                text.text, width, Mathf.Infinity).y);
-            PlaceRect(text.rectTransform, width, height, offset);
-            offset += height + spacing;
+            panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1100f);
+            panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 760f);
+            if (levelTitleText != null) PlaceRect(levelTitleText.rectTransform, 1020f, 65f, 30f);
+            if (situationText != null) PlaceRect(situationText.rectTransform, 1000f, 120f, 112f);
+            if (objectivesText != null) PlaceRect(objectivesText.rectTransform, 1000f, 206f, 256f);
+            if (beginButton != null) PlaceRect(beginButton.GetComponent<RectTransform>(), 1000f, 78f, 510f);
         }
 
         private static void PlaceRect(RectTransform rect, float width, float height, float offset)
         {
-            rect.anchorMin = new Vector2(0.5f, 1f);
-            rect.anchorMax = new Vector2(0.5f, 1f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 1f);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-            rect.anchoredPosition = new Vector2(0f, -offset - height * 0.5f);
+            rect.anchoredPosition = new Vector2(0f, -offset);
         }
 
         private void HandleStateChanged(GameState previousState, GameState newState)

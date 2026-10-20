@@ -15,8 +15,8 @@ namespace FireSafety.UI
 
         [Header("Text Colours")]
         [SerializeField] private Color lowTextColor = Color.white;
-        [SerializeField] private Color mediumTextColor = new Color(1f, 0.85f, 0.25f);
-        [SerializeField] private Color highTextColor = new Color(1f, 0.45f, 0.1f);
+        [SerializeField] private Color mediumTextColor = new Color(1f, 1f, 0f);
+        [SerializeField] private Color highTextColor = Color.red;
         [SerializeField] private Color criticalTextColor = new Color(1f, 0.1f, 0.1f);
 
         [Header("Background Colours")]
@@ -57,6 +57,15 @@ namespace FireSafety.UI
         private bool isTransitionPunchActive;
         private float transitionPunchElapsed;
         private float transitionPunchAmount;
+        private Color32 defaultFaceColor;
+
+        private void Awake()
+        {
+            if (dangerText != null)
+            {
+                defaultFaceColor = dangerText.faceColor;
+            }
+        }
 
         private void OnEnable()
         {
@@ -132,6 +141,15 @@ namespace FireSafety.UI
         private void ApplyVisuals(DangerLevel level)
         {
             ResetAnimationState();
+
+            if (dangerText != null)
+            {
+                // TMP multiplies the vertex colour by the material face colour.
+                // faceColor creates a local material instance, preserving other labels.
+                dangerText.faceColor = level == DangerLevel.Medium || level == DangerLevel.High
+                    ? new Color32(255, 255, 255, defaultFaceColor.a)
+                    : defaultFaceColor;
+            }
 
             switch (level)
             {

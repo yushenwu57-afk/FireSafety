@@ -43,15 +43,23 @@ public class GameHud : MonoBehaviour
     public static bool IsMenuOpen { get; private set; }
     public static bool IsActionPanelOpen { get; private set; }
 
+    public string CurrentDangerLevel => dangerLevel;
+    public event System.Action<string> DangerLevelChanged;
+
     private ActionContext currentActionContext;
     private PanSmokeResponse currentPanFollowUp;
     private PanSmokeResponse delayedPanFollowUpTarget;
     private Coroutine delayedPanFollowUpRoutine;
+    private Color defaultDangerTextColor;
 
     private void Awake()
     {
         ActiveHud = this;
         transform.localScale = Vector3.one;
+        if (dangerLevelText != null)
+        {
+            defaultDangerTextColor = dangerLevelText.color;
+        }
     }
 
     private void OnEnable()
@@ -152,10 +160,7 @@ public class GameHud : MonoBehaviour
                 : levelDisplayName;
         }
 
-        if (dangerLevelText != null)
-        {
-            dangerLevelText.text = "Danger: " + dangerLevel;
-        }
+        UpdateDangerLabel();
     }
 
     public void SetDangerLevel(string newDangerLevel)
@@ -165,11 +170,37 @@ public class GameHud : MonoBehaviour
             return;
         }
 
+        if (dangerLevel == newDangerLevel)
+        {
+            return;
+        }
+
         dangerLevel = newDangerLevel;
 
-        if (dangerLevelText != null)
+        UpdateDangerLabel();
+
+        DangerLevelChanged?.Invoke(dangerLevel);
+    }
+
+    private void UpdateDangerLabel()
+    {
+        if (dangerLevelText == null)
         {
-            dangerLevelText.text = "Danger: " + dangerLevel;
+            return;
+        }
+
+        dangerLevelText.text = "Danger: " + dangerLevel;
+        if (string.Equals(dangerLevel, "Medium", System.StringComparison.OrdinalIgnoreCase))
+        {
+            dangerLevelText.color = new Color(1f, 1f, 0f, defaultDangerTextColor.a);
+        }
+        else if (string.Equals(dangerLevel, "High", System.StringComparison.OrdinalIgnoreCase))
+        {
+            dangerLevelText.color = new Color(1f, 0f, 0f, defaultDangerTextColor.a);
+        }
+        else
+        {
+            dangerLevelText.color = defaultDangerTextColor;
         }
     }
 

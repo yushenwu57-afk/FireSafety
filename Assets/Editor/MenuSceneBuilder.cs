@@ -222,7 +222,7 @@ public static class MenuSceneBuilder
             image = panel.AddComponent<Image>();
         }
 
-        image.color = new Color(0f, 0f, 0f, 0.45f);
+        image.color = new Color(0f, 0f, 0f, 0.92f);
 
         RectTransform rectTransform = panel.GetComponent<RectTransform>();
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);

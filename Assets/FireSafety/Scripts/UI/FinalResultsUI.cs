@@ -23,6 +23,10 @@ namespace FireSafety.UI
         [SerializeField] private TMP_Text summaryText;
         [SerializeField] private TMP_Text feedbackText;
         [SerializeField] private Button restartButton;
+        [SerializeField] private string nextLevelSceneName = "";
+
+        public bool IsVisible { get; private set; }
+        public event Action ResultsShown;
 
         private void OnEnable()
         {
@@ -61,6 +65,29 @@ namespace FireSafety.UI
             SetPanelVisible(false);
         }
 
+        public void HideEvacuationResults()
+        {
+            SetPanelVisible(false);
+        }
+
+        // Level 2 uses the kitchen's legacy uGUI labels, while keeping the shared
+        // results visibility/event contract and the existing first-level TMP path.
+        public void ShowEvacuationResults(EvacuationSession session, CanvasGroup panel,
+            Text heading, Text body)
+        {
+            if (session == null || !session.HasFinalRank) return;
+            resultsPanel = panel;
+            body.resizeTextForBestFit = true;
+            body.resizeTextMinSize = 22;
+            body.resizeTextMaxSize = 28;
+            heading.text = $"Level Rank: {session.FinalRank}";
+            body.text = $"Successfully evacuated: {(session.SuccessfullyEvacuated ? "Yes" : "No")}\n" +
+                $"Ordinary mistakes: {session.OrdinaryMistakeCount}   Serious mistakes: {session.SeriousMistakeCount}\n\n" +
+                session.BuildFeedback();
+            SetPanelVisible(true);
+            if (IsVisible) ResultsShown?.Invoke();
+        }
+
         private void HandleFinalRankCalculated(PerformanceRank rank)
         {
             BuildAndShowResults(rank);
@@ -70,7 +97,14 @@ namespace FireSafety.UI
         {
             if (sceneFlowService != null)
             {
-                sceneFlowService.RestartCurrentScene();
+                if (!string.IsNullOrWhiteSpace(nextLevelSceneName))
+                {
+                    sceneFlowService.LoadLevel(nextLevelSceneName);
+                }
+                else
+                {
+                    sceneFlowService.RestartCurrentScene();
+                }
             }
         }
 
@@ -92,6 +126,10 @@ namespace FireSafety.UI
                 BuildFeedback(displayedRank, discoveryFailed, responseFailed));
 
             SetPanelVisible(true);
+            if (IsVisible)
+            {
+                ResultsShown?.Invoke();
+            }
         }
 
         private static string GetSummary(
@@ -221,6 +259,7 @@ namespace FireSafety.UI
 
         private void SetPanelVisible(bool isVisible)
         {
+            IsVisible = isVisible && resultsPanel != null;
             if (resultsPanel == null)
             {
                 return;

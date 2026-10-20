@@ -78,3 +78,12 @@ Level_2 单独绑定 GameManager，由第二关控制器切换 Exploration / Dec
 第三主决策触发点已按用户要求恢复为截图 Catpet_04：局部 (3.223, 0.223, 4.509)，世界 (3.223, 0.123, 4.509)。移除 thirdDecisionWorldX 覆盖设置；半径、其他流程与墙体不变。
 
 第二关全部玩家可见中文已切换为英文：情境、决策标题与选项、移动提示、暂停菜单、重玩/返回菜单、结算等级/成功状态/失误次数及逐步反馈。流程与评级不变；报警仍使用 local fire emergency number，不写死电话号码。英文结果与状态文本启用字号适配。编译及 271 项逻辑检查通过；完整场景检查仍停在既有 Canvas 缩放断言，英文布局仍需 Play Mode 确认。
+
+## itch.io 文字重叠排查（2026-10-20）
+
+- 用户截图中正文换行后的基线过近，标题与按钮并未重复出现。最可能的原因是第二关在启动时为所有 uGUI Text 创建系统字体（PingFang SC 等），而 WebGL 无法访问这些系统字体；该路径会导致编辑器和发布环境使用不同字体及度量。场景的字体覆盖字段为空，正文原始 lineSpacing 为 1。尚未在目标浏览器复现，因此保留“最可能”判断。
+- EvacuationLevelController 改用内置 LegacyRuntime.ttf，统一第二关所有 Text（包含隐藏的选项、菜单和结算正文）的 lineSpacing 为 1.15。保留可指定随构建提供的字体资产入口，原 chineseFont 字段通过 FormerlySerializedAs 兼容；不再创建或销毁 OS 字体。正文初始关闭 Best Fit，结算仍沿用原有 Best Fit。
+- 修改前后均通过 60 个运行时脚本、Editor 脚本编译与 271 项逻辑断言（全部 10 条终止路径）。完整验证脚本两次均停在原有第 51 行 Canvas 缩放断言：场景序列化为 (0,0,0)，控制器 Start 会恢复为 (1,1,1)。未更改或跳过该断言。git diff --check 通过。
+- 当前本机 Unity 仅安装 MacStandaloneSupport，未安装 WebGL 构建模块；本次未执行 Unity Play Mode 或 WebGL/itch.io 视觉验证。
+- 待验证：重新构建并上传 WebGL，浏览器刷新后以 960×600、1280×720 和全屏显示第二关；分别检查初始正文的自动换行与空行、延误提示、第二决策、返回厨房提示、第三决策、全部结算反馈、ESC 菜单。窗口缩放、重玩后文字应无行间相交或裁切，所有选项应可点击。用普通失误加返回厨房再纠正的路线检查最长结算文本。
+- 字体依据：https://docs.unity3d.com/2022.3/Documentation/Manual/class-Font.html （WebGL 无 OS 默认字体访问能力，fallback 需要包含在项目中）。此前文档的系统中文字体说明已由本次英文 UI 字体方案取代。

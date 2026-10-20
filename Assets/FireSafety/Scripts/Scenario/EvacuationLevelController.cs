@@ -3,6 +3,7 @@ using FireSafety.Core;
 using FireSafety.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace FireSafety.Scenario
@@ -23,7 +24,9 @@ namespace FireSafety.Scenario
         [SerializeField] private Button resumeButton;
         [SerializeField] private Button restartButton;
         [SerializeField] private Button mainMenuButton;
-        [SerializeField] private Font chineseFont;
+        [FormerlySerializedAs("chineseFont")]
+        [Tooltip("Optional font asset included in the build. Defaults to Unity's bundled Latin font.")]
+        [SerializeField] private Font uiFont;
         [SerializeField] private Transform hazardVisualRoot;
 
         [Header("Movement to decision two")]
@@ -56,7 +59,6 @@ namespace FireSafety.Scenario
         private CanvasGroup panelGroup;
         private bool menuOpen;
         private float acceptInputAfter;
-        private Font runtimeFont;
 
         private void Start()
         {
@@ -71,14 +73,15 @@ namespace FireSafety.Scenario
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            if (chineseFont == null)
-            {
-                runtimeFont = Font.CreateDynamicFontFromOSFont(
-                    new[] { "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Arial Unicode MS" }, 30);
-                chineseFont = runtimeFont;
-            }
+            // OS fonts available in the Editor are unavailable in WebGL. Use a
+            // bundled font so glyph metrics and line heights match in builds.
+            if (uiFont == null)
+                uiFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             foreach (Text label in GetComponentsInChildren<Text>(true))
-                if (chineseFont != null) label.font = chineseFont;
+            {
+                label.font = uiFont;
+                label.lineSpacing = 1.15f;
+            }
 
             reticle.SetActive(false);
             // Reuse the existing prompt label as the multiline decision/result body.
@@ -89,6 +92,7 @@ namespace FireSafety.Scenario
             Layout(bodyText.rectTransform, new Vector2(0, -112), new Vector2(1000, 350));
             titleText.fontSize = 34;
             bodyText.fontSize = 28;
+            bodyText.resizeTextForBestFit = false;
             bodyText.alignment = TextAnchor.UpperLeft;
             bodyText.horizontalOverflow = HorizontalWrapMode.Wrap;
             bodyText.verticalOverflow = VerticalWrapMode.Truncate;
@@ -274,7 +278,6 @@ namespace FireSafety.Scenario
             resumeButton.onClick.RemoveListener(ToggleMenu);
             restartButton.onClick.RemoveListener(Replay);
             mainMenuButton.onClick.RemoveListener(ReturnToMenu);
-            if (runtimeFont != null) Destroy(runtimeFont);
         }
     }
 }

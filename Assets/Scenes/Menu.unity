@@ -479,7 +479,8 @@ MonoBehaviour:
   closeInstructionsButton: {fileID: 2000000114}
   mainPanel: {fileID: 2000000020}
   instructionsPanel: {fileID: 2000000080}
-  firstLevelSceneName: Level
+  firstLevelSceneName: Level_1
+  secondLevelSceneName: Level_2
 --- !u!1 &2000000010
 GameObject:
   m_ObjectHideFlags: 0
